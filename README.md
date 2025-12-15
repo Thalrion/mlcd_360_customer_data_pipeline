@@ -191,9 +191,14 @@ Für jede Segment-Tabelle:
 ### Product Recommendation Flow (Idee: Cross-Sell/Upsell basierend auf Kaufhistorie)
 - **Trigger:** Hinzugefügt zur Liste "Upsell Candidates"
 - **Conditional Split:** Nach `last_purchased_category` oder `preferred_categories` Property
-  - Kategorie A gekauft → Empfehlung für ergänzende Produkte aus Kategorie B
-  - Nur günstige Produkte → Upsell zu Premium-Varianten
-  - Wiederkäufer → Bundle-Angebote mit Rabatt
+
+**Beispiele für Nahrungsergänzungsmittel (tetesept, goodvita, rund.um):**
+  - Energie-Produkte gekauft → Empfehlung für Konzentrations-Produkte (Focus Plus Sticks)
+  - Schlaf-Produkte gekauft → Cross-Sell zu Ruhe/Calm-Produkten (Reishi Kapseln)
+  - Immun-Produkte gekauft → Upsell zu Komplett-Bundles
+  - Einzelprodukte gekauft → Bundle-Builder Empfehlung mit Rabatt
+  - Kapseln gekauft → Cross-Sell zu passenden Plus Sticks (Booster)
+  - tetesept Käufer → Empfehlung für Premium-Linie (rund.um, goodvita)
 
 ## Wichtige Metriken im dim_customers
 
