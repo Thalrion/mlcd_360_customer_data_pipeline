@@ -29,76 +29,96 @@ Shipments ────┘
 
 ### Detaillierte Architektur
 
-```
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                      DATENQUELLEN                                              │
-├───────────────┬───────────────┬───────────────┬───────────────┬───────────────────────────────┤
-│   Shopify     │    Amazon     │   Shipments   │    Klaviyo    │           Zendesk             │
-│ (Bestellungen,│ (Bestellungen,│ (DHL, DPD,    │ (Email Events)│      (Support Tickets)        │
-│    Kunden)    │    Kunden)    │  Tracking)    │               │                               │
-└───────┬───────┴───────┬───────┴───────┬───────┴───────┬───────┴───────────────┬───────────────┘
-        │               │               │               │                       │
-        ▼               ▼               ▼               ▼                       ▼
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                    STAGING LAYER                                               │
-│  stg_shopify__customers    stg_amazon__customers    stg_shipments           stg_klaviyo__*    │
-│  stg_shopify__orders       stg_amazon__orders                               stg_zendesk__*    │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
-        │               │               │               │                       │
-        ▼               ▼               ▼               ▼                       ▼
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                  INTERMEDIATE LAYER                                            │
-│  int_customer__order_metrics      (RFM, CLV, Kaufmuster)                                      │
-│  int_customer__shipment_metrics   (Lieferstatus, Tracking, Zustellquote)                      │
-│  int_customer__email_engagement   (Öffnungs-/Klickraten, Engagement)                          │
-│  int_customer__support_metrics    (Tickets, CSAT, Lösungszeit)                                │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                                        ▼
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                     MARTS LAYER                                                │
-│                                                                                                │
-│   ┌───────────────────────────────────────────────────────────────────────────────────────┐   │
-│   │                              dim_customers                                             │   │
-│   │                      (Einheitlicher Customer 360° View)                               │   │
-│   │                                                                                        │   │
-│   │  • Profil-Informationen    • Email Engagement      • Shipment-Metriken                │   │
-│   │  • Kauf-Metriken           • Support-Metriken      • Lieferzufriedenheit              │   │
-│   │  • RFM Scores              • Lifecycle Stage                                          │   │
-│   │  • Value Tier              • Engagement Score                                         │   │
-│   │  • Marketing Flags         • Segment-Zuweisungen                                      │   │
-│   └───────────────────────────────────────────────────────────────────────────────────────┘   │
-│                                        │                                                       │
-│        ┌───────────────────────────────┼───────────────────────────────┐                      │
-│        ▼                               ▼                               ▼                      │
-│   ┌──────────────┐            ┌──────────────┐                ┌──────────────┐               │
-│   │  seg_*       │            │events_       │                │seg_at_risk   │  ...          │
-│   │  (Segmente)  │            │shipments     │                │_high_value   │               │
-│   └──────────────┘            └──────────────┘                └──────────────┘               │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                                        ▼
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                     HIGHTOUCH                                                  │
-│                                   (Reverse ETL)                                                │
-│                                                                                                │
-│   Syncs:                                                                                      │
-│   • dim_customers → Klaviyo Profiles (alle Properties)                                        │
-│   • seg_* → Klaviyo Lists (für Flows & Campaigns)                                             │
-│   • events_shipments → Klaviyo Events (Package Shipped, Package Delivered)                    │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                                        ▼
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                      KLAVIYO                                                   │
-│                                                                                                │
-│   Flows:                                                                                      │
-│   • Winback Flow (ausgelöst durch seg_winback_candidates)                                     │
-│   • VIP Welcome Flow (ausgelöst durch seg_vip_customers)                                      │
-│   • Shipment Flows (ausgelöst durch Package Shipped / Delivered Events)                       │
-│   • At-Risk Intervention (ausgelöst durch seg_high_value_at_risk)                             │
-│   • Post-Purchase Nurture (ausgelöst durch seg_repeat_purchase_*)                             │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph sources["DATENQUELLEN"]
+        shopify["Shopify<br/>(Bestellungen, Kunden)"]
+        amazon["Amazon<br/>(Bestellungen, Kunden)"]
+        shipments["Shipments<br/>(DHL, DPD, Tracking)"]
+        klaviyo_in["Klaviyo<br/>(Email Events)"]
+        zendesk["Zendesk<br/>(Support Tickets)"]
+    end
+
+    subgraph staging["STAGING LAYER"]
+        stg_shopify["stg_shopify__customers<br/>stg_shopify__orders"]
+        stg_amazon["stg_amazon__customers<br/>stg_amazon__orders"]
+        stg_ship["stg_shipments"]
+        stg_klaviyo["stg_klaviyo__*"]
+        stg_zendesk["stg_zendesk__*"]
+    end
+
+    subgraph intermediate["INTERMEDIATE LAYER"]
+        int_order["int_customer__order_metrics<br/>(RFM, CLV, Kaufmuster)"]
+        int_ship["int_customer__shipment_metrics<br/>(Lieferstatus, Tracking, Zustellquote)"]
+        int_email["int_customer__email_engagement<br/>(Öffnungs-/Klickraten, Engagement)"]
+        int_support["int_customer__support_metrics<br/>(Tickets, CSAT, Lösungszeit)"]
+    end
+
+    subgraph marts["MARTS LAYER"]
+        dim_customers["dim_customers<br/>(Einheitlicher Customer 360° View)<br/><br/>• Profil-Informationen • Email Engagement<br/>• Kauf-Metriken • Support-Metriken<br/>• RFM Scores • Lifecycle Stage<br/>• Value Tier • Engagement Score<br/>• Marketing Flags • Segment-Zuweisungen"]
+
+        subgraph marts_outputs["Abgeleitete Modelle"]
+            seg["seg_*<br/>(Segmente)"]
+            events["events_shipments"]
+            seg_risk["seg_high_value_at_risk"]
+        end
+    end
+
+    subgraph hightouch["HIGHTOUCH (Reverse ETL)"]
+        sync1["dim_customers → Klaviyo Profiles"]
+        sync2["seg_* → Klaviyo Lists"]
+        sync3["events_shipments → Klaviyo Events"]
+    end
+
+    subgraph klaviyo_out["KLAVIYO (Activation)"]
+        flow1["Winback Flow"]
+        flow2["VIP Welcome Flow"]
+        flow3["Shipment Flows"]
+        flow4["At-Risk Intervention"]
+        flow5["Post-Purchase Nurture"]
+    end
+
+    %% Connections: Sources to Staging
+    shopify --> stg_shopify
+    amazon --> stg_amazon
+    shipments --> stg_ship
+    klaviyo_in --> stg_klaviyo
+    zendesk --> stg_zendesk
+
+    %% Connections: Staging to Intermediate
+    stg_shopify --> int_order
+    stg_amazon --> int_order
+    stg_ship --> int_ship
+    stg_klaviyo --> int_email
+    stg_zendesk --> int_support
+
+    %% Connections: Intermediate to Marts
+    int_order --> dim_customers
+    int_ship --> dim_customers
+    int_email --> dim_customers
+    int_support --> dim_customers
+
+    %% Connections: dim_customers to outputs
+    dim_customers --> seg
+    dim_customers --> events
+    dim_customers --> seg_risk
+
+    %% Connections: Marts to Hightouch
+    dim_customers --> sync1
+    seg --> sync2
+    seg_risk --> sync2
+    events --> sync3
+
+    %% Connections: Hightouch to Klaviyo
+    sync1 --> flow1
+    sync1 --> flow2
+    sync1 --> flow4
+    sync1 --> flow5
+    sync2 --> flow1
+    sync2 --> flow2
+    sync2 --> flow4
+    sync2 --> flow5
+    sync3 --> flow3
 ```
 
 ### Erweiterbarkeit
