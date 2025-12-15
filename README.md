@@ -35,7 +35,7 @@ flowchart LR
     Hightouch --> Klaviyo_out["Klaviyo<br/>(activation)"]
 ```
 
-### Warum nicht einfach Klaviyo direkt mit Shopify verbinden?
+### 360° CDP Plattform vs. Klaviyo-Shopify Direkt Anbindung
 
 Klaviyo bietet eine native Shopify-Integration, die mit 2 Klicks eingerichtet ist. Die Frage ist berechtigt: **Warum der Aufwand mit BigQuery, dbt und Hightouch?**
 
