@@ -220,6 +220,18 @@ packages:
 - 100 Mio. Operations/Monat
 - Für mehr Syncs: Self-Serve Plan (Preis auf Anfrage) oder Segmente direkt in Klaviyo aus den gesynkten Properties bauen
 
+### Implementation-Vergleich
+
+| | Diese Lösung | Salesforce |
+|--|--------------|------------|
+| **Externe Hilfe nötig** | Nein | Ja (Implementierungspartner) |
+| **Vorhandene Expertise** | Ja (BigQuery, dbt, Klaviyo bereits im Einsatz) | Nein |
+| **Beratungsaufwand** | Minimal | Hoch (Discovery, Workshops, Change Management) |
+| **Time-to-Value** | Wochen | Monate |
+| **Risiko** | Gering (inkrementell erweiterbar) | Hoch (Big-Bang Migration) |
+
+**Fazit:** Beide Lösungen erfordern Implementation, aber diese Lösung nutzt bereits vorhandene Tools und internes Know-how. Salesforce würde externe Berater, längere Projektlaufzeiten und erheblichen Abstimmungsaufwand erfordern.
+
 ## Next Steps
 
 1. [ ] Sources in BigQuery verifizieren (Schema-Namen anpassen)
