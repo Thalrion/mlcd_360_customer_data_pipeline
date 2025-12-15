@@ -116,15 +116,15 @@ models/
 
 ```
 Project ID: merz-logistic-merge-poc
-Dataset: dbt_prod
+Dataset: dbt_prod_klavyio (dedizierter Mart für Klaviyo Marts)
 Service Account: bigquery-mlcflow@merz-logistic-merge-poc.iam.gserviceaccount.com
 ```
 
 ### 2. Modelle auswählen
 
 Hightouch kann direkt dbt-Modelle referenzieren:
-- Aktiviere "dbt Cloud" oder "dbt Core" Integration
-- Verbinde das [Git Repo](https://github.com/MLC-Digital-Transformation/dbt)
+- Aktiviere "dbt Core" Integration
+- Verbinde euer Git Repo
 - Modelle mit Tag `klaviyo_sync` werden automatisch erkannt
 
 ### 3. Syncs konfigurieren
@@ -146,7 +146,7 @@ Hightouch kann direkt dbt-Modelle referenzieren:
 | days_since_last_order | Days Since Last Order | Property |
 | ... | ... | ... |
 
-**Zeitplan:** Alle 6 Stunden oder bei dbt run completion
+**Zeitplan:** z.B. Alle 6 Stunden oder wenn die Marts refreshed werden.
 
 #### Sync 2-5: Segmente (seg_* → Klaviyo Lists)
 
@@ -159,7 +159,7 @@ Für jede Segment-Tabelle:
 
 **Zeitplan:** Täglich oder alle 12 Stunden
 
-## Klaviyo Flows Setup
+## Klaviyo Flows Setup Beispiele
 
 ### Winback Flow
 - **Trigger:** Hinzugefügt zur Liste "Winback Candidates"
@@ -175,7 +175,7 @@ Für jede Segment-Tabelle:
   - gold → Früher Zugang zu Sales
   - silver → Erinnerung an Treueprogramm
 
-### At-Risk Intervention
+### At-Risk Intervention (Idee: High Value Customers mit Zendesk Tickets die ungelöst sind)
 - **Trigger:** Hinzugefügt zur Liste "High Value At Risk"
 - **Conditional Split:** Nach `recommended_action` Property
   - resolve_support_first → Verzögerung, prüfen ob Ticket gelöst
