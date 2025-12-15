@@ -6,19 +6,20 @@ Diese dbt-Modelle erstellen einen **unified Customer 360° View** für D2C E-Com
 der via **Hightouch** nach **Klaviyo** gesynct wird.
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         DATA SOURCES                                 │
-├─────────────────┬─────────────────┬─────────────────────────────────┤
-│    Shopify      │    Klaviyo      │           Zendesk               │
-│  (Orders, Kunden)│ (Email Events)  │      (Support Tickets)          │
-└────────┬────────┴────────┬────────┴──────────────┬──────────────────┘
-         │                 │                       │
-         ▼                 ▼                       ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      STAGING LAYER                                   │
-│  stg_shopify__customers    stg_klaviyo__profiles   stg_zendesk__*   │
-│  stg_shopify__orders       stg_klaviyo__events                      │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                              DATA SOURCES                                        │
+├─────────────────┬─────────────────┬─────────────────┬───────────────────────────┤
+│    Shopify      │    Amazon       │    Klaviyo      │         Zendesk           │
+│ (Orders, Kunden)│ (Orders, Kunden)│  (Email Events) │    (Support Tickets)      │
+└────────┬────────┴────────┬────────┴────────┬────────┴─────────────┬─────────────┘
+         │                 │                 │                      │
+         ▼                 ▼                 ▼                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           STAGING LAYER                                          │
+│  stg_shopify__customers   stg_amazon__customers   stg_klaviyo__profiles         │
+│  stg_shopify__orders      stg_amazon__orders      stg_klaviyo__events           │
+│                                                   stg_zendesk__*                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
          │                 │                       │
          ▼                 ▼                       ▼
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -80,6 +81,8 @@ models/
 ├── staging/
 │   ├── stg_shopify__customers.sql
 │   ├── stg_shopify__orders.sql
+│   ├── stg_amazon__customers.sql
+│   ├── stg_amazon__orders.sql
 │   ├── stg_klaviyo__profiles.sql
 │   ├── stg_klaviyo__events.sql
 │   ├── stg_zendesk__tickets.sql
@@ -185,6 +188,7 @@ Für jeden Segment-Table:
 
 ### Data Sources in BigQuery
 - Shopify-Daten (via Fivetran, Airbyte, oder Stitch)
+- Amazon-Daten (via Fivetran, Airbyte, oder Amazon Seller Central Reports)
 - Klaviyo-Daten (via Fivetran oder Klaviyo's native BigQuery export)
 - Zendesk-Daten (via Fivetran oder Airbyte)
 
