@@ -1,4 +1,4 @@
-# D2C E-Commerce Customer 360° - dbt Models
+# MLC-direct D2C E-Commerce Customer 360° - dbt Models
 
 ## Übersicht
 
@@ -197,21 +197,28 @@ packages:
 
 ## Kosten-Vergleich
 
-| Lösung | Jährliche Kosten |
-|--------|------------------|
-| **Diese Lösung** | |
-| BigQuery (Scanning + Storage) | ~€500-1.000 |
-| dbt Cloud (Team) | ~€1.200 |
-| Hightouch (Starter) | ~€4.000 |
-| Klaviyo (besteht bereits) | €0 zusätzlich |
-| **Gesamt** | **~€5.500-6.200/Jahr** |
-| | |
-| **Salesforce Alternative** | |
-| Sales Cloud | ~€20.000+ |
-| Data Cloud | ~€60.000+ |
-| Marketing Cloud | ~€15.000+ |
-| Implementation | ~€50.000+ |
-| **Gesamt** | **€145.000+/Jahr** |
+| Lösung | Monatliche Kosten | Jährliche Kosten |
+|--------|-------------------|------------------|
+| **Diese Lösung** | | |
+| dbt (Open Source, Self-Hosted) | ~€20 | ~€240 |
+| BigQuery (Scanning + Storage) | ~€20 | ~€240 |
+| Hightouch (Free Tier: 2 Syncs) | €0 | €0 |
+| Klaviyo (besteht bereits) | €0 | €0 |
+| **Gesamt** | **~€40/Monat** | **~€480/Jahr** |
+| | | |
+| **Salesforce Alternative** | | |
+| Sales Cloud | | ~€20.000+ |
+| Data Cloud | | ~€60.000+ |
+| Marketing Cloud | | ~€15.000+ |
+| Implementation | | ~€50.000+ |
+| **Gesamt** | | **€145.000+/Jahr** |
+
+### Hightouch Free Tier Details
+- **2 aktive Syncs** pro Monat (reicht für: 1x dim_customers → Klaviyo Profiles + 1x Segment-Sync)
+- Stündliche Sync-Frequenz (max)
+- Unlimited Destinations, User Seats
+- 100 Mio. Operations/Monat
+- Für mehr Syncs: Self-Serve Plan (Preis auf Anfrage) oder Segmente direkt in Klaviyo aus den gesynkten Properties bauen
 
 ## Next Steps
 
