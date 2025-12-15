@@ -37,8 +37,6 @@ flowchart LR
 
 ### 360° CDP Plattform vs. Klaviyo-Shopify Direkt Anbindung
 
-Klaviyo bietet eine native Shopify-Integration, die mit 2 Klicks eingerichtet ist. Die Frage ist berechtigt: **Warum der Aufwand mit BigQuery, dbt und Hightouch?**
-
 | Bereich | Nur Klaviyo ↔ Shopify | Mit CDP-Lösung |
 |---------|----------------------|----------------|
 | **Datenquellen** | Nur Shopify | Shopify + **Amazon** + Zendesk + Carrier-Tracking + zukünftige Marktplätze + sonstige externe Datenquellen |
