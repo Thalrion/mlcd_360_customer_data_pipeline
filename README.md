@@ -193,13 +193,6 @@ Für jede Segment-Tabelle:
 - ⏳ Klaviyo-Daten (ausstehend - via Fivetran oder Klaviyos nativer BigQuery Export)
 - ⏳ Zendesk-Daten (ausstehend - via Fivetran oder Airbyte)
 
-### Pakete (dbt_packages.yml)
-```yaml
-packages:
-  - package: dbt-labs/dbt_utils
-    version: [">=1.0.0", "<2.0.0"]
-```
-
 ## Kostenvergleich
 
 | Lösung | Monatliche Kosten | Jährliche Kosten |
