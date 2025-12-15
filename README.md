@@ -161,14 +161,14 @@ Für jede Segment-Tabelle:
 
 ## Klaviyo Flows Setup Beispiele
 
-### Winback Flow
+### Winback Flow (Idee: Kunden reaktivieren, die länger nicht gekauft haben)
 - **Trigger:** Hinzugefügt zur Liste "Winback Candidates"
 - **Conditional Split:** Nach `winback_stage` Property
   - early_winback → Sanfte Erinnerung, kein Rabatt
   - mid_winback → 10% Rabatt-Angebot
   - late_winback → 15-20% Rabatt + Dringlichkeit
 
-### VIP Flow
+### VIP Flow (Idee: Top-Kunden mit hohem CLV besonders wertschätzen)
 - **Trigger:** Hinzugefügt zur Liste "VIP Customers"
 - **Conditional Split:** Nach `vip_tier` Property
   - platinum → Persönliche Ansprache, exklusiver Zugang
