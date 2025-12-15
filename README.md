@@ -116,15 +116,15 @@ models/
 
 ```
 Project ID: merz-logistic-merge-poc
-Dataset: dbt_prod (oder euer Output-Schema)
-Service Account: hightouch-sa@merz-logistic-merge-poc.iam.gserviceaccount.com
+Dataset: dbt_prod
+Service Account: bigquery-mlcflow@merz-logistic-merge-poc.iam.gserviceaccount.com
 ```
 
 ### 2. Modelle auswählen
 
 Hightouch kann direkt dbt-Modelle referenzieren:
 - Aktiviere "dbt Cloud" oder "dbt Core" Integration
-- Verbinde euer Git Repo
+- Verbinde das [Git Repo](https://github.com/MLC-Digital-Transformation/dbt)
 - Modelle mit Tag `klaviyo_sync` werden automatisch erkannt
 
 ### 3. Syncs konfigurieren
