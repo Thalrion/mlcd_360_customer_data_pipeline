@@ -175,6 +175,12 @@ Für jede Segment-Tabelle:
   - gold → Früher Zugang zu Sales
   - silver → Erinnerung an Treueprogramm
 
+### Cross-Channel Flow (Idee: Kunden belohnen, die über mehrere Kanäle kaufen - z.B. Shopify + Amazon)
+- **Trigger:** Hinzugefügt zur Liste "Cross-Channel Customers"
+- **Conditional Split:** Nach `channels_count` oder `purchase_channels` Property
+  - 2 Kanäle → Danke-Mail + kleiner Bonus
+  - 3+ Kanäle → Exklusiver Loyalty-Status + besondere Angebote
+
 ### At-Risk Intervention (Idee: High Value Customers mit Zendesk Tickets die ungelöst sind)
 - **Trigger:** Hinzugefügt zur Liste "High Value At Risk"
 - **Conditional Split:** Nach `recommended_action` Property
