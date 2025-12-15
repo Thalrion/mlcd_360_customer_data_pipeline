@@ -188,10 +188,10 @@ Für jede Segment-Tabelle:
 ## Voraussetzungen
 
 ### Datenquellen in BigQuery
-- Shopify-Daten (via Fivetran, Airbyte oder Stitch)
-- Amazon-Daten (via Fivetran, Airbyte oder Amazon Seller Central Reports)
-- Klaviyo-Daten (via Fivetran oder Klaviyos nativer BigQuery Export)
-- Zendesk-Daten (via Fivetran oder Airbyte)
+- ✅ Shopify-Daten (bereits über bestehende Pipeline synchronisiert)
+- ✅ Amazon-Daten (bereits über bestehende Pipeline synchronisiert)
+- ⏳ Klaviyo-Daten (ausstehend - via Fivetran oder Klaviyos nativer BigQuery Export)
+- ⏳ Zendesk-Daten (ausstehend - via Fivetran oder Airbyte)
 
 ### Pakete (dbt_packages.yml)
 ```yaml
