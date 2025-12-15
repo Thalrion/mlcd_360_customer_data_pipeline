@@ -139,6 +139,8 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 
 ## Klaviyo Flows Setup Beispiele
 
+Mit den synchronisierten Kundendaten und Segmenten aus BigQuery lassen sich in Klaviyo zahlreiche automatisierte Flows umsetzen. Die folgenden Beispiele zeigen, welche personalisierten Customer Journeys möglich wären:
+
 ---
 
 ### 1. Neukunden-Willkommens-Flow
