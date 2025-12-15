@@ -107,9 +107,9 @@ models/
 ### 1. Quelle: BigQuery verbinden
 
 ```
-Project ID: your-gcp-project
+Project ID: merz-logistic-merge-poc
 Dataset: dbt_prod (oder euer Output-Schema)
-Service Account: hightouch-sa@your-project.iam.gserviceaccount.com
+Service Account: hightouch-sa@merz-logistic-merge-poc.iam.gserviceaccount.com
 ```
 
 ### 2. Modelle auswählen
