@@ -150,11 +150,70 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 | **Trigger** | Hinzugefügt zur Liste "Winback Candidates" |
 | **Split nach** | `winback_stage` Property |
 
-| Stage | Aktion |
-|-------|--------|
-| `early_winback` | Sanfte Erinnerung, kein Rabatt |
-| `mid_winback` | 10% Rabatt-Angebot |
-| `late_winback` | 15-20% Rabatt + Dringlichkeit |
+```mermaid
+flowchart TD
+    trigger(["⚠️ Kunde auf Winback-Liste<br/>(60+ Tage ohne Kauf)"]) --> check_stage{{"winback_stage?"}}
+
+    check_stage -->|early_winback<br/>60-90 Tage| early
+    check_stage -->|mid_winback<br/>90-120 Tage| mid
+    check_stage -->|late_winback<br/>120+ Tage| late
+
+    subgraph early["🟢 Early Winback"]
+        early_email1["📧 Email 1: Wir vermissen dich!<br/>(kein Rabatt)"]
+        early_email1 --> early_wait["⏳ 5 Tage warten"]
+        early_wait --> early_check{{"Gekauft?"}}
+        early_check -->|Nein| early_email2["📧 Email 2: Neue Produkte<br/>die dir gefallen könnten"]
+    end
+
+    subgraph mid["🟡 Mid Winback"]
+        mid_email1["📧 Email 1: 10% Rabatt<br/>WINBACK10"]
+        mid_email1 --> mid_wait["⏳ 5 Tage warten"]
+        mid_wait --> mid_check{{"Gekauft?"}}
+        mid_check -->|Nein| mid_email2["📧 Email 2: Reminder<br/>Code läuft bald ab!"]
+    end
+
+    subgraph late["🔴 Late Winback"]
+        late_email1["📧 Email 1: 20% Rabatt<br/>COMEBACK20"]
+        late_email1 --> late_wait["⏳ 7 Tage warten"]
+        late_wait --> late_check{{"Gekauft?"}}
+        late_check -->|Nein| late_email2["📧 Email 2: Letzte Chance!<br/>+ Kostenloser Versand"]
+        late_email2 --> late_wait2["⏳ 7 Tage warten"]
+        late_wait2 --> late_check2{{"Gekauft?"}}
+    end
+
+    early_check -->|Ja| reactivated
+    early_email2 --> early_final["⏳ 7 Tage warten"] --> early_final_check{{"Gekauft?"}}
+    early_final_check -->|Ja| reactivated
+    early_final_check -->|Nein| escalate_mid["⬆️ Eskalation zu<br/>Mid Winback"]
+    escalate_mid --> mid
+
+    mid_check -->|Ja| reactivated
+    mid_email2 --> mid_final["⏳ 7 Tage warten"] --> mid_final_check{{"Gekauft?"}}
+    mid_final_check -->|Ja| reactivated
+    mid_final_check -->|Nein| escalate_late["⬆️ Eskalation zu<br/>Late Winback"]
+    escalate_late --> late
+
+    late_check -->|Ja| reactivated
+    late_check2 -->|Ja| reactivated
+    late_check2 -->|Nein| churned
+
+    reactivated(["✅ Reaktiviert!<br/>→ Update lifecycle_stage"])
+    churned(["❌ Churned<br/>→ Suppress für 90 Tage"])
+
+    churned --> final_attempt["⏳ 90 Tage Pause"]
+    final_attempt --> last_chance["📧 Finale Email:<br/>Goodbye + 25% Rabatt"]
+    last_chance --> last_check{{"Gekauft?"}}
+    last_check -->|Ja| reactivated
+    last_check -->|Nein| archived(["📁 Archiviert<br/>Keine weiteren Emails"])
+```
+
+**Eskalationslogik:**
+| Stage | Tage ohne Kauf | Rabatt | Max. Emails |
+|-------|----------------|--------|-------------|
+| Early | 60-90 | 0% | 2 |
+| Mid | 90-120 | 10% | 2 |
+| Late | 120+ | 20% | 2 |
+| Final | 210+ | 25% | 1 (letzte Chance) |
 
 ---
 
