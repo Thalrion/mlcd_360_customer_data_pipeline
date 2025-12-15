@@ -157,6 +157,57 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
   - Kapseln gekauft → Cross-Sell zu passenden Plus Sticks (Booster)
   - tetesept Käufer → Empfehlung für Premium-Linie (rund.um, goodvita)
 
+### Replenishment Flow (Idee: Automatischer Nachkauf-Reminder nach 30 Tagen)
+- **Trigger:** Event "Package Delivered" + 25 Tage Wartezeit
+- **Conditional Split:** Nach `product_type` Property
+  - Verbrauchsprodukte (Vitamine, Nahrungsergänzung) → "Zeit für Nachschub?"
+  - Einmalprodukte (Nasendusche-Gerät) → Nur Nachfüllsalz empfehlen
+- **Personalisierung:** Direktlink zum zuletzt gekauften Produkt
+- **Rabatt-Logik:** Nach 2. Reminder kleiner Anreiz (5-10%)
+
+### Saisonale Flows (Idee: Proaktive Ansprache basierend auf Jahreszeit)
+
+**Erkältungssaison Flow (September - Februar):**
+- **Trigger:** Segment "Erkältungsprodukt-Käufer" + Datum im Zeitraum
+- tetesept Nasendusche, Immunprodukte, zirkulin Propolis
+- "Der Herbst kommt – bist du vorbereitet?"
+
+**Allergiesaison Flow (März - Juni):**
+- **Trigger:** Segment "Allergie-Käufer" + Datum im Zeitraum
+- tetesept Nasendusche bei Pollenallergie
+- "Pollenzeit startet – jetzt vorsorgen"
+
+**Adventskalender Flow (Oktober - November):**
+- **Trigger:** Alle Kunden oder VIPs + Datum
+- Früher Zugang für VIPs, Reminder-Serie
+- "Sichere dir deinen Adventskalender bevor er ausverkauft ist"
+
+### Schwangerschafts-Journey Flow (Idee: Langfristige Begleitung über 9+ Monate)
+- **Trigger:** Kauf von Schwangerschaftsvitaminen
+- **Journey:**
+  - Monat 1-3: Folsäure, Übelkeit-Tipps
+  - Monat 4-6: Eisen, Energie
+  - Monat 7-9: Geburtsvorbereitung
+  - Nach Geburt: Stillzeit-Vitamine, Baby-Pflege Cross-Sell
+- **Wichtig:** Opt-in für diese Journey (sensibles Thema)
+
+### Neukunden-Willkommens-Flow (Idee: Erste Beziehung aufbauen - größte Herausforderung!)
+- **Trigger:** Erster Kauf abgeschlossen
+- **Serie:**
+  - Tag 1: Danke + Versandinfo
+  - Tag 3: Markengeschichte (tetesept/zirkulin/SOS Tradition)
+  - Tag 7: Anwendungstipps für gekauftes Produkt
+  - Tag 14: Bewertung anfragen
+  - Tag 21: Cross-Sell basierend auf Erstkauf
+  - Tag 30: Replenishment-Reminder
+
+### Schlaf-Routine Flow (Idee: Kunden mit Schlafprodukten langfristig begleiten)
+- **Trigger:** Kauf von Schlaf-/Einschlafprodukten
+- **Content:**
+  - Tipps für besseren Schlaf (Content Marketing)
+  - Ergänzende Produkte (zirkulin Baldrian, Melatonin)
+  - Nach 30 Tagen: "Wie schläfst du jetzt?"
+
 ## Wichtige Metriken im dim_customers
 
 | Metrik | Beschreibung | Verwendung |
