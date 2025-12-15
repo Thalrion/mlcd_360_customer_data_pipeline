@@ -43,7 +43,7 @@ flowchart TB
         shopify["Shopify<br/>(Bestellungen, Kunden)"]
         amazon["Amazon<br/>(Bestellungen, Kunden)"]
         shipments["Shipments<br/>(DHL, DPD, Tracking)"]
-        klaviyo_in["Klaviyo<br/>(Email Events)"]
+        klaviyo_in["Klaviyo<br/>(Email Events, Subscriptions)"]
         zendesk["Zendesk<br/>(Support Tickets)"]
     end
 
@@ -58,7 +58,7 @@ flowchart TB
     subgraph intermediate["INTERMEDIATE LAYER"]
         int_order["int_customer__order_metrics<br/>(RFM, CLV, Kaufmuster)"]
         int_ship["int_customer__shipment_metrics<br/>(Lieferstatus, Tracking, Zustellquote)"]
-        int_email["int_customer__email_engagement<br/>(Öffnungs-/Klickraten, Engagement)"]
+        int_email["int_customer__email_engagement<br/>(Öffnungs-/Klickraten, Engagement, Subscriptions)"]
         int_support["int_customer__support_metrics<br/>(Tickets, CSAT, Lösungszeit)"]
     end
 
@@ -392,7 +392,7 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 - ✅ Shopify-Daten (bereits über bestehende Pipeline synchronisiert)
 - ✅ Amazon-Daten (bereits über bestehende Pipeline synchronisiert)
 - ✅ Shipment-Daten (bereits in BigQuery - DHL, DPD, etc.)
-- ⏳ Klaviyo-Daten (ausstehend - über Klaviyos nativem BigQuery Export)
+- ⏳ Klaviyo-Daten (ausstehend - über Klaviyos nativem BigQuery Export: Events + List Subscriptions)
 - ⏳ Zendesk-Daten (ausstehend - über DLT <1 Tag Setup)
 
 ## Kostenvergleich
@@ -458,6 +458,8 @@ models/
 │   ├── stg_shipments.sql
 │   ├── stg_klaviyo__profiles.sql
 │   ├── stg_klaviyo__events.sql
+│   ├── stg_klaviyo__lists.sql
+│   ├── stg_klaviyo__list_memberships.sql
 │   ├── stg_zendesk__tickets.sql
 │   └── stg_zendesk__users.sql
 ├── intermediate/
