@@ -17,6 +17,18 @@ Reverse ETL ermöglicht es, datengetriebene Kundenprofile und Segmente, die wir 
 
 ➡️ *Im weiteren Dokument wird Hightouch als Reverse ETL Tool verwendet.*
 
+### Architektur auf einen Blick
+
+```
+Shopify  ─────┐
+Amazon   ─────┤
+Klaviyo  ─────┼──→  BigQuery  ──→  dbt Models  ──→  Hightouch  ──→  Klaviyo
+Zendesk  ─────┤      (raw)        (unified)      (reverse ETL)    (activation)
+Shipments ────┘
+```
+
+### Detaillierte Architektur
+
 ```
 ┌───────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                      DATENQUELLEN                                              │
