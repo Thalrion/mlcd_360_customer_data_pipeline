@@ -141,7 +141,83 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 
 ---
 
-### 1. Winback Flow
+### 1. Neukunden-Willkommens-Flow
+
+> **Ziel:** Erste Beziehung aufbauen (größte Herausforderung!)
+
+| | |
+|---|---|
+| **Trigger** | Erster Kauf abgeschlossen |
+
+```mermaid
+flowchart TD
+    trigger(["🛒 Erster Kauf abgeschlossen"]) --> day1
+
+    subgraph day1["Tag 1"]
+        email1["📧 Danke + Versandinfo"]
+    end
+
+    day1 --> wait3["⏳ 2 Tage warten"]
+    wait3 --> day3
+
+    subgraph day3["Tag 3"]
+        email2["📧 Markengeschichte<br/>(tetesept/zirkulin/SOS)"]
+    end
+
+    day3 --> check_click{{"Klick auf Email?"}}
+
+    check_click -->|Ja| engaged_path
+    check_click -->|Nein| standard_path
+
+    subgraph engaged_path["Engagierter Pfad"]
+        day5_eng["📧 Tag 5: Exklusiver Content<br/>(Gesundheitstipps)"]
+        day5_eng --> day7_eng["📧 Tag 7: Personalisierte<br/>Produktempfehlungen"]
+    end
+
+    subgraph standard_path["Standard Pfad"]
+        day7_std["📧 Tag 7: Anwendungstipps<br/>für gekauftes Produkt"]
+    end
+
+    engaged_path --> check_purchase{{"Neukauf getätigt?"}}
+    standard_path --> check_purchase
+
+    check_purchase -->|Ja| buyer_path
+    check_purchase -->|Nein| nurture_path
+
+    subgraph buyer_path["Käufer-Pfad"]
+        thank_you["📧 Danke für 2. Kauf!<br/>+ VIP-Teaser"]
+        thank_you --> loyal["➡️ Weiter zu<br/>Loyalty-Flow"]
+    end
+
+    subgraph nurture_path["Nurture-Pfad"]
+        day14["📧 Tag 14: Bewertung anfragen"]
+        day14 --> check_review{{"Bewertung<br/>abgegeben?"}}
+
+        check_review -->|Ja| day21_reward["📧 Tag 21: Danke +<br/>10% Gutschein"]
+        check_review -->|Nein| day21_crosssell["📧 Tag 21: Cross-Sell<br/>basierend auf Erstkauf"]
+
+        day21_reward --> day30
+        day21_crosssell --> day30
+
+        day30["📧 Tag 30: Replenishment-<br/>Reminder"]
+    end
+
+    day30 --> check_final{{"Kauf innerhalb<br/>30 Tage?"}}
+    check_final -->|Ja| active(["✅ Status: Active Customer"])
+    check_final -->|Nein| winback(["⚠️ Weiter zu Winback-Flow"])
+```
+
+**Legende:**
+| Symbol | Bedeutung |
+|--------|-----------|
+| 📧 | Email-Versand |
+| ⏳ | Wartezeit |
+| 🛒 | Kauf-Event |
+| ◇ | Bedingte Verzweigung (basierend auf Kundenverhalten) |
+
+---
+
+### 2. Winback Flow
 
 > **Ziel:** Kunden reaktivieren, die länger nicht gekauft haben
 
@@ -217,7 +293,7 @@ flowchart TD
 
 ---
 
-### 2. VIP Flow
+### 3. VIP Flow
 
 > **Ziel:** Top-Kunden mit hohem CLV besonders wertschätzen
 
@@ -234,7 +310,7 @@ flowchart TD
 
 ---
 
-### 3. Cross-Channel Flow
+### 4. Cross-Channel Flow
 
 > **Ziel:** Kunden belohnen, die über mehrere Kanäle kaufen (z.B. Shopify + Amazon)
 
@@ -250,11 +326,11 @@ flowchart TD
 
 ---
 
-### 4. Shipment Flows
+### 5. Shipment Flows
 
 > **Ziel:** Kunden proaktiv über Versandstatus informieren
 
-#### 4a. Package Shipped Flow
+#### 5a. Package Shipped Flow
 
 | | |
 |---|---|
@@ -266,7 +342,7 @@ flowchart TD
 | +1 Tag | Cross-Sell: "Während du wartest..." |
 | +2 Tage | Anwendungstipps für bestellte Produkte |
 
-#### 4b. Package Delivered Flow
+#### 5b. Package Delivered Flow
 
 | | |
 |---|---|
@@ -278,7 +354,7 @@ flowchart TD
 | +7 Tage | Anwendungstipps |
 | +25 Tage | Replenishment-Reminder starten |
 
-#### 4c. Delivery Problem Flow
+#### 5c. Delivery Problem Flow
 
 | | |
 |---|---|
@@ -291,7 +367,7 @@ flowchart TD
 
 ---
 
-### 5. At-Risk Intervention
+### 6. At-Risk Intervention
 
 > **Ziel:** High Value Customers mit ungelösten Zendesk Tickets retten
 
@@ -308,7 +384,7 @@ flowchart TD
 
 ---
 
-### 6. Product Recommendation Flow
+### 7. Product Recommendation Flow
 
 > **Ziel:** Cross-Sell/Upsell basierend auf Kaufhistorie
 
@@ -330,7 +406,7 @@ flowchart TD
 
 ---
 
-### 7. Replenishment Flow
+### 8. Replenishment Flow
 
 > **Ziel:** Automatischer Nachkauf-Reminder nach 30 Tagen
 
@@ -347,11 +423,11 @@ flowchart TD
 
 ---
 
-### 8. Saisonale Flows
+### 9. Saisonale Flows
 
 > **Ziel:** Proaktive Ansprache basierend auf Jahreszeit
 
-#### 8a. Erkältungssaison (September - Februar)
+#### 9a. Erkältungssaison (September - Februar)
 
 | | |
 |---|---|
@@ -359,7 +435,7 @@ flowchart TD
 | **Produkte** | tetesept Nasendusche, Immunprodukte, zirkulin Propolis |
 | **Message** | "Der Herbst kommt – bist du vorbereitet?" |
 
-#### 8b. Allergiesaison (März - Juni)
+#### 9b. Allergiesaison (März - Juni)
 
 | | |
 |---|---|
@@ -367,7 +443,7 @@ flowchart TD
 | **Produkte** | tetesept Nasendusche bei Pollenallergie |
 | **Message** | "Pollenzeit startet – jetzt vorsorgen" |
 
-#### 8c. Adventskalender (Oktober - November)
+#### 9c. Adventskalender (Oktober - November)
 
 | | |
 |---|---|
@@ -377,7 +453,7 @@ flowchart TD
 
 ---
 
-### 9. Schwangerschafts-Journey Flow
+### 10. Schwangerschafts-Journey Flow
 
 > **Ziel:** Langfristige Begleitung über 9+ Monate
 >
@@ -393,82 +469,6 @@ flowchart TD
 | Monat 4-6 | Eisen, Energie |
 | Monat 7-9 | Geburtsvorbereitung |
 | Nach Geburt | Stillzeit-Vitamine, Baby-Pflege Cross-Sell |
-
----
-
-### 10. Neukunden-Willkommens-Flow
-
-> **Ziel:** Erste Beziehung aufbauen (größte Herausforderung!)
-
-| | |
-|---|---|
-| **Trigger** | Erster Kauf abgeschlossen |
-
-```mermaid
-flowchart TD
-    trigger(["🛒 Erster Kauf abgeschlossen"]) --> day1
-
-    subgraph day1["Tag 1"]
-        email1["📧 Danke + Versandinfo"]
-    end
-
-    day1 --> wait3["⏳ 2 Tage warten"]
-    wait3 --> day3
-
-    subgraph day3["Tag 3"]
-        email2["📧 Markengeschichte<br/>(tetesept/zirkulin/SOS)"]
-    end
-
-    day3 --> check_click{{"Klick auf Email?"}}
-
-    check_click -->|Ja| engaged_path
-    check_click -->|Nein| standard_path
-
-    subgraph engaged_path["Engagierter Pfad"]
-        day5_eng["📧 Tag 5: Exklusiver Content<br/>(Gesundheitstipps)"]
-        day5_eng --> day7_eng["📧 Tag 7: Personalisierte<br/>Produktempfehlungen"]
-    end
-
-    subgraph standard_path["Standard Pfad"]
-        day7_std["📧 Tag 7: Anwendungstipps<br/>für gekauftes Produkt"]
-    end
-
-    engaged_path --> check_purchase{{"Neukauf getätigt?"}}
-    standard_path --> check_purchase
-
-    check_purchase -->|Ja| buyer_path
-    check_purchase -->|Nein| nurture_path
-
-    subgraph buyer_path["Käufer-Pfad"]
-        thank_you["📧 Danke für 2. Kauf!<br/>+ VIP-Teaser"]
-        thank_you --> loyal["➡️ Weiter zu<br/>Loyalty-Flow"]
-    end
-
-    subgraph nurture_path["Nurture-Pfad"]
-        day14["📧 Tag 14: Bewertung anfragen"]
-        day14 --> check_review{{"Bewertung<br/>abgegeben?"}}
-
-        check_review -->|Ja| day21_reward["📧 Tag 21: Danke +<br/>10% Gutschein"]
-        check_review -->|Nein| day21_crosssell["📧 Tag 21: Cross-Sell<br/>basierend auf Erstkauf"]
-
-        day21_reward --> day30
-        day21_crosssell --> day30
-
-        day30["📧 Tag 30: Replenishment-<br/>Reminder"]
-    end
-
-    day30 --> check_final{{"Kauf innerhalb<br/>30 Tage?"}}
-    check_final -->|Ja| active(["✅ Status: Active Customer"])
-    check_final -->|Nein| winback(["⚠️ Weiter zu Winback-Flow"])
-```
-
-**Legende:**
-| Symbol | Bedeutung |
-|--------|-----------|
-| 📧 | Email-Versand |
-| ⏳ | Wartezeit |
-| 🛒 | Kauf-Event |
-| ◇ | Bedingte Verzweigung (basierend auf Kundenverhalten) |
 
 ---
 
