@@ -195,6 +195,8 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 
 **Fazit:** Beide Lösungen erfordern Implementierung, aber diese Lösung nutzt bereits vorhandene Tools und internes Know-how. Salesforce würde externe Berater, längere Projektlaufzeiten und erheblichen Abstimmungsaufwand erfordern.
 
+**Hauptaufwand:** Der größte Implementierungsaufwand liegt im Erstellen der dbt-Modelle. Dies ist jedoch ein perfekter Use Case für **Claude Code** (KI-gestützte Entwicklung), wodurch wir deutlich schneller sind als bei klassischer Entwicklung.
+
 ## Nächste Schritte
 
 1. [ ] Quellen in BigQuery verifizieren (Schema-Namen anpassen)
