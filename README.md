@@ -5,6 +5,15 @@
 Diese dbt-Modelle erstellen einen **einheitlichen Customer 360° View** für die MLC-direct D2C E-Commerce-Plattform,
 der via **Hightouch** nach **Klaviyo** synchronisiert wird.
 
+### Was macht Hightouch?
+
+**Hightouch** ist ein sogenanntes "Reverse ETL"-Tool und fungiert als **Brücke zwischen unserem Data Warehouse (BigQuery) und Marketing-Tools (Klaviyo)**:
+
+- **Ohne Hightouch:** Kundendaten liegen isoliert in BigQuery und können nicht für Marketing genutzt werden
+- **Mit Hightouch:** Kundensegmente und -eigenschaften werden automatisch nach Klaviyo übertragen
+
+**Für das Management:** Hightouch ermöglicht es, datengetriebene Kundenprofile und Segmente, die wir in BigQuery erstellen, direkt für personalisierte E-Mail-Kampagnen in Klaviyo zu nutzen – ohne manuelle Exporte oder IT-Aufwand.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                              DATENQUELLEN                                        │
