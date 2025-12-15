@@ -188,6 +188,13 @@ Für jede Segment-Tabelle:
   - service_recovery → Entschuldigung + Kompensationsangebot
   - incentive_offer → Rückgewinnungs-Rabatt
 
+### Product Recommendation Flow (Idee: Cross-Sell/Upsell basierend auf Kaufhistorie)
+- **Trigger:** Hinzugefügt zur Liste "Upsell Candidates"
+- **Conditional Split:** Nach `last_purchased_category` oder `preferred_categories` Property
+  - Kategorie A gekauft → Empfehlung für ergänzende Produkte aus Kategorie B
+  - Nur günstige Produkte → Upsell zu Premium-Varianten
+  - Wiederkäufer → Bundle-Angebote mit Rabatt
+
 ## Wichtige Metriken im dim_customers
 
 | Metrik | Beschreibung | Verwendung |
@@ -198,14 +205,17 @@ Für jede Segment-Tabelle:
 | `rfm_segment` | 3-stelliger RFM Code (z.B. "555" = Beste) | Targeting |
 | `is_winback_candidate` | Boolean Flag | Trigger für Flows |
 | `is_high_value_at_risk` | Boolean Flag | Prioritäts-Alarm |
+| `preferred_categories` | Meist gekaufte Produktkategorien | Cross-Sell Targeting |
+| `avg_order_value` | Durchschnittlicher Bestellwert | Upsell-Potenzial |
+| `cross_sell_score` | 0-100 Score für Cross-Sell Wahrscheinlichkeit | Priorisierung |
 
 ## Voraussetzungen
 
 ### Datenquellen in BigQuery
 - ✅ Shopify-Daten (bereits über bestehende Pipeline synchronisiert)
 - ✅ Amazon-Daten (bereits über bestehende Pipeline synchronisiert)
-- ⏳ Klaviyo-Daten (ausstehend - via Fivetran oder Klaviyos nativer BigQuery Export)
-- ⏳ Zendesk-Daten (ausstehend - via Fivetran oder Airbyte)
+- ⏳ Klaviyo-Daten (ausstehend - über Klaviyos nativem BigQuery Export)
+- ⏳ Zendesk-Daten (ausstehend - über DLT <1 Tag Setup)
 
 ## Kostenvergleich
 
