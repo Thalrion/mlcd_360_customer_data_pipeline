@@ -1,4 +1,4 @@
-# MLC-direct D2C E-Commerce Customer 360°
+# MLC-direct Customer 360° CDP (Customer Data Platform) Konzept
 
 ## Übersicht
 
