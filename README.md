@@ -2,15 +2,16 @@
 
 ## Übersicht
 
-Diese dbt-Modelle erstellen einen **unified Customer 360° View** für D2C E-Commerce, 
-der via **Hightouch** nach **Klaviyo** gesynct wird.
+Diese dbt-Modelle erstellen einen **einheitlichen Customer 360° View** für D2C E-Commerce,
+der via **Hightouch** nach **Klaviyo** synchronisiert wird.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              DATA SOURCES                                        │
+│                              DATENQUELLEN                                        │
 ├─────────────────┬─────────────────┬─────────────────┬───────────────────────────┤
 │    Shopify      │    Amazon       │    Klaviyo      │         Zendesk           │
-│ (Orders, Kunden)│ (Orders, Kunden)│  (Email Events) │    (Support Tickets)      │
+│(Bestellungen,   │(Bestellungen,   │  (Email Events) │    (Support Tickets)      │
+│    Kunden)      │    Kunden)      │                 │                           │
 └────────┬────────┴────────┬────────┴────────┬────────┴─────────────┬─────────────┘
          │                 │                 │                      │
          ▼                 ▼                 ▼                      ▼
@@ -22,59 +23,59 @@ der via **Hightouch** nach **Klaviyo** gesynct wird.
 └─────────────────────────────────────────────────────────────────────────────────┘
          │                 │                       │
          ▼                 ▼                       ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    INTERMEDIATE LAYER                                │
-│  int_customer__order_metrics     (RFM, CLV, Purchase Patterns)      │
-│  int_customer__email_engagement  (Open/Click Rates, Engagement)     │
-│  int_customer__support_metrics   (Tickets, CSAT, Resolution)        │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                         INTERMEDIATE LAYER                                       │
+│  int_customer__order_metrics     (RFM, CLV, Kaufmuster)                         │
+│  int_customer__email_engagement  (Öffnungs-/Klickraten, Engagement)             │
+│  int_customer__support_metrics   (Tickets, CSAT, Lösungszeit)                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
                            │
                            ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       MARTS LAYER                                    │
-│                                                                      │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                    dim_customers                             │   │
-│   │            (Unified Customer 360° View)                      │   │
-│   │                                                              │   │
-│   │  • Profile Info        • Email Engagement                    │   │
-│   │  • Purchase Metrics    • Support Metrics                     │   │
-│   │  • RFM Scores          • Lifecycle Stage                     │   │
-│   │  • Value Tier          • Engagement Score                    │   │
-│   │  • Marketing Flags     • Segment Assignments                 │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                              │                                       │
-│              ┌───────────────┼───────────────┐                      │
-│              ▼               ▼               ▼                      │
-│   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐               │
-│   │seg_winback   │ │seg_vip       │ │seg_at_risk   │  ...          │
-│   │_candidates   │ │_customers    │ │_high_value   │               │
-│   └──────────────┘ └──────────────┘ └──────────────┘               │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                          MARTS LAYER                                             │
+│                                                                                  │
+│   ┌─────────────────────────────────────────────────────────────────────────┐   │
+│   │                         dim_customers                                    │   │
+│   │                 (Einheitlicher Customer 360° View)                       │   │
+│   │                                                                          │   │
+│   │  • Profil-Informationen    • Email Engagement                            │   │
+│   │  • Kauf-Metriken           • Support-Metriken                            │   │
+│   │  • RFM Scores              • Lifecycle Stage                             │   │
+│   │  • Value Tier              • Engagement Score                            │   │
+│   │  • Marketing Flags         • Segment-Zuweisungen                         │   │
+│   └─────────────────────────────────────────────────────────────────────────┘   │
+│                              │                                                   │
+│              ┌───────────────┼───────────────┐                                  │
+│              ▼               ▼               ▼                                  │
+│   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐                           │
+│   │seg_winback   │ │seg_vip       │ │seg_at_risk   │  ...                      │
+│   │_candidates   │ │_customers    │ │_high_value   │                           │
+│   └──────────────┘ └──────────────┘ └──────────────┘                           │
+└─────────────────────────────────────────────────────────────────────────────────┘
                            │
                            ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      HIGHTOUCH                                       │
-│                   (Reverse ETL)                                      │
-│                                                                      │
-│   Syncs:                                                            │
-│   • dim_customers → Klaviyo Profiles (alle Properties)              │
-│   • seg_* → Klaviyo Lists (für Flows & Campaigns)                   │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           HIGHTOUCH                                              │
+│                        (Reverse ETL)                                             │
+│                                                                                  │
+│   Syncs:                                                                        │
+│   • dim_customers → Klaviyo Profiles (alle Properties)                          │
+│   • seg_* → Klaviyo Lists (für Flows & Campaigns)                               │
+└─────────────────────────────────────────────────────────────────────────────────┘
                            │
                            ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       KLAVIYO                                        │
-│                                                                      │
-│   Flows:                                                            │
-│   • Winback Flow (triggered by seg_winback_candidates)              │
-│   • VIP Welcome Flow (triggered by seg_vip_customers)               │
-│   • At-Risk Intervention (triggered by seg_high_value_at_risk)      │
-│   • Post-Purchase Nurture (triggered by seg_repeat_purchase_*)      │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                            KLAVIYO                                               │
+│                                                                                  │
+│   Flows:                                                                        │
+│   • Winback Flow (ausgelöst durch seg_winback_candidates)                       │
+│   • VIP Welcome Flow (ausgelöst durch seg_vip_customers)                        │
+│   • At-Risk Intervention (ausgelöst durch seg_high_value_at_risk)               │
+│   • Post-Purchase Nurture (ausgelöst durch seg_repeat_purchase_*)               │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Model Struktur
+## Modell-Struktur
 
 ```
 models/
@@ -92,7 +93,7 @@ models/
 │   ├── int_customer__email_engagement.sql
 │   └── int_customer__support_metrics.sql
 ├── marts/
-│   ├── dim_customers.sql              # ← Haupt-Model für Klaviyo
+│   ├── dim_customers.sql              # ← Haupt-Modell für Klaviyo
 │   └── segments/
 │       ├── seg_winback_candidates.sql
 │       ├── seg_vip_customers.sql
@@ -103,7 +104,7 @@ models/
 
 ## Hightouch Setup
 
-### 1. Source: BigQuery verbinden
+### 1. Quelle: BigQuery verbinden
 
 ```
 Project ID: your-gcp-project
@@ -111,19 +112,19 @@ Dataset: dbt_prod (oder euer Output-Schema)
 Service Account: hightouch-sa@your-project.iam.gserviceaccount.com
 ```
 
-### 2. Models auswählen
+### 2. Modelle auswählen
 
-Hightouch kann direkt dbt Models referenzieren:
+Hightouch kann direkt dbt-Modelle referenzieren:
 - Aktiviere "dbt Cloud" oder "dbt Core" Integration
 - Verbinde euer Git Repo
-- Models mit Tag `klaviyo_sync` werden automatisch erkannt
+- Modelle mit Tag `klaviyo_sync` werden automatisch erkannt
 
 ### 3. Syncs konfigurieren
 
 #### Sync 1: Customer Profiles (dim_customers → Klaviyo Profiles)
 
-| BigQuery Column | Klaviyo Field | Typ |
-|-----------------|---------------|-----|
+| BigQuery-Spalte | Klaviyo-Feld | Typ |
+|-----------------|--------------|-----|
 | email | Email | Identifier |
 | first_name | First Name | Property |
 | last_name | Last Name | Property |
@@ -137,69 +138,69 @@ Hightouch kann direkt dbt Models referenzieren:
 | days_since_last_order | Days Since Last Order | Property |
 | ... | ... | ... |
 
-**Schedule:** Alle 6 Stunden oder bei dbt run completion
+**Zeitplan:** Alle 6 Stunden oder bei dbt run completion
 
-#### Sync 2-5: Segments (seg_* → Klaviyo Lists)
+#### Sync 2-5: Segmente (seg_* → Klaviyo Lists)
 
-Für jeden Segment-Table:
+Für jede Segment-Tabelle:
 1. Neuen Sync erstellen
-2. Model: z.B. `seg_winback_candidates`
-3. Destination: Klaviyo List
-4. Mode: **Mirror** (Profiles werden automatisch hinzugefügt/entfernt)
-5. Match on: Email
+2. Modell: z.B. `seg_winback_candidates`
+3. Ziel: Klaviyo List
+4. Modus: **Mirror** (Profile werden automatisch hinzugefügt/entfernt)
+5. Abgleich über: Email
 
-**Schedule:** Täglich oder alle 12 Stunden
+**Zeitplan:** Täglich oder alle 12 Stunden
 
 ## Klaviyo Flows Setup
 
 ### Winback Flow
-- **Trigger:** Added to List "Winback Candidates"
-- **Conditional Split:** By `winback_stage` property
-  - early_winback → Soft reminder, no discount
-  - mid_winback → 10% discount offer
-  - late_winback → 15-20% discount + urgency
+- **Trigger:** Hinzugefügt zur Liste "Winback Candidates"
+- **Conditional Split:** Nach `winback_stage` Property
+  - early_winback → Sanfte Erinnerung, kein Rabatt
+  - mid_winback → 10% Rabatt-Angebot
+  - late_winback → 15-20% Rabatt + Dringlichkeit
 
 ### VIP Flow
-- **Trigger:** Added to List "VIP Customers"
-- **Conditional Split:** By `vip_tier` property
-  - platinum → Personal outreach, exclusive access
-  - gold → Early access to sales
-  - silver → Loyalty rewards reminder
+- **Trigger:** Hinzugefügt zur Liste "VIP Customers"
+- **Conditional Split:** Nach `vip_tier` Property
+  - platinum → Persönliche Ansprache, exklusiver Zugang
+  - gold → Früher Zugang zu Sales
+  - silver → Erinnerung an Treueprogramm
 
 ### At-Risk Intervention
-- **Trigger:** Added to List "High Value At Risk"
-- **Conditional Split:** By `recommended_action` property
-  - resolve_support_first → Delay, check if ticket resolved
-  - service_recovery → Apology + compensation offer
-  - incentive_offer → Win-back discount
+- **Trigger:** Hinzugefügt zur Liste "High Value At Risk"
+- **Conditional Split:** Nach `recommended_action` Property
+  - resolve_support_first → Verzögerung, prüfen ob Ticket gelöst
+  - service_recovery → Entschuldigung + Kompensationsangebot
+  - incentive_offer → Rückgewinnungs-Rabatt
 
-## Key Metrics im dim_customers
+## Wichtige Metriken im dim_customers
 
-| Metric | Beschreibung | Verwendung |
+| Metrik | Beschreibung | Verwendung |
 |--------|--------------|------------|
 | `lifecycle_stage` | prospect → new → active → at_risk → lapsing → churned | Segmentierung |
 | `customer_value_tier` | vip / high / medium / low / no_purchase | Priorisierung |
-| `engagement_score` | 0-100 Score aus Purchase + Email + Support | Health Metric |
-| `rfm_segment` | 3-stelliger RFM Code (z.B. "555" = Best) | Targeting |
+| `engagement_score` | 0-100 Score aus Kauf + Email + Support | Health Metric |
+| `rfm_segment` | 3-stelliger RFM Code (z.B. "555" = Beste) | Targeting |
 | `is_winback_candidate` | Boolean Flag | Trigger für Flows |
-| `is_high_value_at_risk` | Boolean Flag | Priority Alert |
+| `is_high_value_at_risk` | Boolean Flag | Prioritäts-Alarm |
 
 ## Voraussetzungen
 
-### Data Sources in BigQuery
-- Shopify-Daten (via Fivetran, Airbyte, oder Stitch)
-- Amazon-Daten (via Fivetran, Airbyte, oder Amazon Seller Central Reports)
-- Klaviyo-Daten (via Fivetran oder Klaviyo's native BigQuery export)
+### Datenquellen in BigQuery
+- Shopify-Daten (via Fivetran, Airbyte oder Stitch)
+- Amazon-Daten (via Fivetran, Airbyte oder Amazon Seller Central Reports)
+- Klaviyo-Daten (via Fivetran oder Klaviyos nativer BigQuery Export)
 - Zendesk-Daten (via Fivetran oder Airbyte)
 
-### Packages (dbt_packages.yml)
+### Pakete (dbt_packages.yml)
 ```yaml
 packages:
   - package: dbt-labs/dbt_utils
     version: [">=1.0.0", "<2.0.0"]
 ```
 
-## Kosten-Vergleich
+## Kostenvergleich
 
 | Lösung | Monatliche Kosten | Jährliche Kosten |
 |--------|-------------------|------------------|
@@ -214,17 +215,17 @@ packages:
 | Sales Cloud | | ~€20.000+ |
 | Data Cloud | | ~€60.000+ |
 | Marketing Cloud | | ~€15.000+ |
-| Implementation | | ~€50.000+ |
+| Implementierung | | ~€50.000+ |
 | **Gesamt** | | **€145.000+/Jahr** |
 
 ### Hightouch Free Tier Details
 - **2 aktive Syncs** pro Monat (reicht für: 1x dim_customers → Klaviyo Profiles + 1x Segment-Sync)
-- Stündliche Sync-Frequenz (max)
-- Unlimited Destinations, User Seats
+- Stündliche Sync-Frequenz (maximal)
+- Unbegrenzte Destinations und User Seats
 - 100 Mio. Operations/Monat
-- Für mehr Syncs: Self-Serve Plan (Preis auf Anfrage) oder Segmente direkt in Klaviyo aus den gesynkten Properties bauen
+- Für mehr Syncs: Self-Serve Plan (Preis auf Anfrage) oder Segmente direkt in Klaviyo aus den synchronisierten Properties erstellen
 
-### Implementation-Vergleich
+### Implementierungsvergleich
 
 | | Diese Lösung | Salesforce |
 |--|--------------|------------|
@@ -234,13 +235,13 @@ packages:
 | **Time-to-Value** | Wochen | Monate |
 | **Risiko** | Gering (inkrementell erweiterbar) | Hoch (Big-Bang Migration) |
 
-**Fazit:** Beide Lösungen erfordern Implementation, aber diese Lösung nutzt bereits vorhandene Tools und internes Know-how. Salesforce würde externe Berater, längere Projektlaufzeiten und erheblichen Abstimmungsaufwand erfordern.
+**Fazit:** Beide Lösungen erfordern Implementierung, aber diese Lösung nutzt bereits vorhandene Tools und internes Know-how. Salesforce würde externe Berater, längere Projektlaufzeiten und erheblichen Abstimmungsaufwand erfordern.
 
-## Next Steps
+## Nächste Schritte
 
-1. [ ] Sources in BigQuery verifizieren (Schema-Namen anpassen)
-2. [ ] dbt Models deployen & testen
+1. [ ] Quellen in BigQuery verifizieren (Schema-Namen anpassen)
+2. [ ] dbt-Modelle deployen & testen
 3. [ ] Hightouch Free Tier aktivieren
 4. [ ] Ersten Sync (dim_customers) konfigurieren
-5. [ ] In Klaviyo: Flow für ersten Segment bauen
-6. [ ] PoC dem Chef präsentieren 🎯
+5. [ ] In Klaviyo: Flow für erstes Segment erstellen
+6. [ ] PoC der Geschäftsführung präsentieren
