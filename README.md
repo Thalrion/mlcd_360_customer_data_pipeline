@@ -41,7 +41,7 @@ Klaviyo bietet eine native Shopify-Integration, die mit 2 Klicks eingerichtet is
 
 | Bereich | Nur Klaviyo ↔ Shopify | Mit CDP-Lösung |
 |---------|----------------------|----------------|
-| **Datenquellen** | Nur Shopify | Shopify + **Amazon** + Zendesk + Carrier-Tracking |
+| **Datenquellen** | Nur Shopify | Shopify + **Amazon** + Zendesk + Carrier-Tracking + zukünftige Marktplätze + sonstige externe Datenquellen |
 | **Cross-Channel** | ❌ Kunde bei Amazon unsichtbar | ✅ Einheitlicher Kunde über alle Kanäle |
 | **Lifetime Value** | Nur Shopify-Umsatz | Gesamtumsatz inkl. Amazon |
 | **Support-Daten** | ❌ | ✅ Zendesk-Tickets fließen ein |
