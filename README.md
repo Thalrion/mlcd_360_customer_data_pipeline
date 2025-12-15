@@ -92,82 +92,6 @@ Die Plattform ist **leicht erweiterbar** für neue Vertriebskanäle. Beim Hinzuf
 
 Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisch die Integration in den Customer 360° View.
 
-## Modell-Struktur
-
-```
-models/
-├── staging/
-│   ├── stg_shopify__customers.sql
-│   ├── stg_shopify__orders.sql
-│   ├── stg_amazon__customers.sql
-│   ├── stg_amazon__orders.sql
-│   ├── stg_klaviyo__profiles.sql
-│   ├── stg_klaviyo__events.sql
-│   ├── stg_zendesk__tickets.sql
-│   └── stg_zendesk__users.sql
-├── intermediate/
-│   ├── int_customer__order_metrics.sql
-│   ├── int_customer__email_engagement.sql
-│   └── int_customer__support_metrics.sql
-├── marts/
-│   ├── dim_customers.sql              # ← Haupt-Modell für Klaviyo
-│   └── segments/
-│       ├── seg_winback_candidates.sql
-│       ├── seg_vip_customers.sql
-│       ├── seg_repeat_purchase_candidates.sql
-│       └── seg_high_value_at_risk.sql
-└── schema.yml
-```
-
-## Hightouch Setup
-
-### 1. Quelle: BigQuery verbinden
-
-```
-Project ID: merz-logistic-merge-poc
-Dataset: dbt_prod_klavyio (dedizierter Mart für Klaviyo Marts)
-Service Account: bigquery-mlcflow@merz-logistic-merge-poc.iam.gserviceaccount.com
-```
-
-### 2. Modelle auswählen
-
-Hightouch kann direkt dbt-Modelle referenzieren:
-- Aktiviere "dbt Core" Integration
-- Verbinde euer Git Repo
-- Modelle mit Tag `klaviyo_sync` werden automatisch erkannt
-
-### 3. Syncs konfigurieren
-
-#### Sync 1: Customer Profiles (dim_customers → Klaviyo Profiles)
-
-| BigQuery-Spalte | Klaviyo-Feld | Typ |
-|-----------------|--------------|-----|
-| email | Email | Identifier |
-| first_name | First Name | Property |
-| last_name | Last Name | Property |
-| lifetime_revenue | LTV | Property |
-| total_orders | Total Orders | Property |
-| lifecycle_stage | Lifecycle Stage | Property |
-| customer_value_tier | Value Tier | Property |
-| engagement_score | Engagement Score | Property |
-| rfm_segment | RFM Segment | Property |
-| is_vip | Is VIP | Property |
-| days_since_last_order | Days Since Last Order | Property |
-| ... | ... | ... |
-
-**Zeitplan:** z.B. Alle 6 Stunden oder wenn die Marts refreshed werden.
-
-#### Sync 2-5: Segmente (seg_* → Klaviyo Lists)
-
-Für jede Segment-Tabelle:
-1. Neuen Sync erstellen
-2. Modell: z.B. `seg_winback_candidates`
-3. Ziel: Klaviyo List
-4. Modus: **Mirror** (Profile werden automatisch hinzugefügt/entfernt)
-5. Abgleich über: Email
-
-**Zeitplan:** Täglich oder alle 12 Stunden
-
 ## Klaviyo Flows Setup Beispiele
 
 ### Winback Flow (Idee: Kunden reaktivieren, die länger nicht gekauft haben)
@@ -275,3 +199,83 @@ Für jede Segment-Tabelle:
 3. [ ] Hightouch Free Tier aktivieren
 4. [ ] Ersten Sync (dim_customers) konfigurieren
 5. [ ] In Klaviyo: Flow für erstes Segment erstellen
+
+---
+
+# Anhang: Technische Details
+
+## Modell-Struktur
+
+```
+models/
+├── staging/
+│   ├── stg_shopify__customers.sql
+│   ├── stg_shopify__orders.sql
+│   ├── stg_amazon__customers.sql
+│   ├── stg_amazon__orders.sql
+│   ├── stg_klaviyo__profiles.sql
+│   ├── stg_klaviyo__events.sql
+│   ├── stg_zendesk__tickets.sql
+│   └── stg_zendesk__users.sql
+├── intermediate/
+│   ├── int_customer__order_metrics.sql
+│   ├── int_customer__email_engagement.sql
+│   └── int_customer__support_metrics.sql
+├── marts/
+│   ├── dim_customers.sql              # ← Haupt-Modell für Klaviyo
+│   └── segments/
+│       ├── seg_winback_candidates.sql
+│       ├── seg_vip_customers.sql
+│       ├── seg_repeat_purchase_candidates.sql
+│       └── seg_high_value_at_risk.sql
+└── schema.yml
+```
+
+## Hightouch Setup
+
+### 1. Quelle: BigQuery verbinden
+
+```
+Project ID: merz-logistic-merge-poc
+Dataset: dbt_prod_klavyio (dedizierter Mart für Klaviyo Marts)
+Service Account: bigquery-mlcflow@merz-logistic-merge-poc.iam.gserviceaccount.com
+```
+
+### 2. Modelle auswählen
+
+Hightouch kann direkt dbt-Modelle referenzieren:
+- Aktiviere "dbt Core" Integration
+- Verbinde das [Git Repo](https://github.com/MLC-Digital-Transformation/dbt)
+- Modelle mit Tag `klaviyo_sync` werden automatisch erkannt
+
+### 3. Syncs konfigurieren
+
+#### Sync 1: Customer Profiles (dim_customers → Klaviyo Profiles)
+
+| BigQuery-Spalte | Klaviyo-Feld | Typ |
+|-----------------|--------------|-----|
+| email | Email | Identifier |
+| first_name | First Name | Property |
+| last_name | Last Name | Property |
+| lifetime_revenue | LTV | Property |
+| total_orders | Total Orders | Property |
+| lifecycle_stage | Lifecycle Stage | Property |
+| customer_value_tier | Value Tier | Property |
+| engagement_score | Engagement Score | Property |
+| rfm_segment | RFM Segment | Property |
+| is_vip | Is VIP | Property |
+| days_since_last_order | Days Since Last Order | Property |
+| ... | ... | ... |
+
+**Zeitplan:** z.B. Alle 6 Stunden oder wenn die Marts refreshed werden.
+
+#### Sync 2-5: Segmente (seg_* → Klaviyo Lists)
+
+Für jede Segment-Tabelle:
+1. Neuen Sync erstellen
+2. Modell: z.B. `seg_winback_candidates`
+3. Ziel: Klaviyo List
+4. Modus: **Mirror** (Profile werden automatisch hinzugefügt/entfernt)
+5. Abgleich über: Email
+
+**Zeitplan:** Täglich oder alle 12 Stunden
