@@ -99,114 +99,236 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 
 ## Klaviyo Flows Setup Beispiele
 
-### Winback Flow (Idee: Kunden reaktivieren, die länger nicht gekauft haben)
-- **Trigger:** Hinzugefügt zur Liste "Winback Candidates"
-- **Conditional Split:** Nach `winback_stage` Property
-  - early_winback → Sanfte Erinnerung, kein Rabatt
-  - mid_winback → 10% Rabatt-Angebot
-  - late_winback → 15-20% Rabatt + Dringlichkeit
+---
 
-### VIP Flow (Idee: Top-Kunden mit hohem CLV besonders wertschätzen)
-- **Trigger:** Hinzugefügt zur Liste "VIP Customers"
-- **Conditional Split:** Nach `vip_tier` Property
-  - platinum → Persönliche Ansprache, exklusiver Zugang
-  - gold → Früher Zugang zu Sales
-  - silver → Erinnerung an Treueprogramm
+### 1. Winback Flow
 
-### Cross-Channel Flow (Idee: Kunden belohnen, die über mehrere Kanäle kaufen - z.B. Shopify + Amazon)
-- **Trigger:** Hinzugefügt zur Liste "Cross-Channel Customers"
-- **Conditional Split:** Nach `channels_count` oder `purchase_channels` Property
-  - 2 Kanäle → Danke-Mail + kleiner Bonus
-  - 3+ Kanäle → Exklusiver Loyalty-Status + besondere Angebote
+> **Ziel:** Kunden reaktivieren, die länger nicht gekauft haben
 
-### Shipment Flows (Idee: Kunden proaktiv über Versandstatus informieren)
+| | |
+|---|---|
+| **Trigger** | Hinzugefügt zur Liste "Winback Candidates" |
+| **Split nach** | `winback_stage` Property |
 
-**Package Shipped Flow:**
-- **Trigger:** Event "Package Shipped"
-- Tracking-Link + "Dein Paket ist unterwegs"
-- Cross-Sell: "Während du wartest - passende Produkte entdecken"
-- Vorfreude aufbauen: Anwendungstipps für bestellte Produkte
+| Stage | Aktion |
+|-------|--------|
+| `early_winback` | Sanfte Erinnerung, kein Rabatt |
+| `mid_winback` | 10% Rabatt-Angebot |
+| `late_winback` | 15-20% Rabatt + Dringlichkeit |
 
-**Package Delivered Flow:**
-- **Trigger:** Event "Package Delivered"
-- **Nach 3-5 Tagen:** Review Request ("Wie gefällt dir dein Produkt?")
-- **Nach 7 Tagen:** Anwendungstipps ("So holst du das Beste aus deinem Produkt")
-- **Nachkauf-Reminder starten:** Timer für Replenishment (z.B. nach 25 Tagen bei 30-Tage-Packung)
+---
 
-**Delivery Problem Flow:**
-- **Trigger:** Event "Delivery Failed" oder "Delivery Delayed"
-- Proaktive Entschuldigung bei Verspätung
-- Support-Kontakt anbieten bei fehlgeschlagener Zustellung
+### 2. VIP Flow
 
-### At-Risk Intervention (Idee: High Value Customers mit Zendesk Tickets die ungelöst sind)
-- **Trigger:** Hinzugefügt zur Liste "High Value At Risk"
-- **Conditional Split:** Nach `recommended_action` Property
-  - resolve_support_first → Verzögerung, prüfen ob Ticket gelöst
-  - service_recovery → Entschuldigung + Kompensationsangebot
-  - incentive_offer → Rückgewinnungs-Rabatt
+> **Ziel:** Top-Kunden mit hohem CLV besonders wertschätzen
 
-### Product Recommendation Flow (Idee: Cross-Sell/Upsell basierend auf Kaufhistorie)
-- **Trigger:** Hinzugefügt zur Liste "Upsell Candidates"
-- **Conditional Split:** Nach `last_purchased_category` oder `preferred_categories` Property
+| | |
+|---|---|
+| **Trigger** | Hinzugefügt zur Liste "VIP Customers" |
+| **Split nach** | `vip_tier` Property |
 
-**Beispiele für Nahrungsergänzungsmittel (tetesept, goodvita, rund.um):**
-  - Energie-Produkte gekauft → Empfehlung für Konzentrations-Produkte (Focus Plus Sticks)
-  - Schlaf-Produkte gekauft → Cross-Sell zu Ruhe/Calm-Produkten (Reishi Kapseln)
-  - Immun-Produkte gekauft → Upsell zu Komplett-Bundles
-  - Einzelprodukte gekauft → Bundle-Builder Empfehlung mit Rabatt
-  - Kapseln gekauft → Cross-Sell zu passenden Plus Sticks (Booster)
-  - tetesept Käufer → Empfehlung für Premium-Linie (rund.um, goodvita)
+| Tier | Aktion |
+|------|--------|
+| `platinum` | Persönliche Ansprache, exklusiver Zugang |
+| `gold` | Früher Zugang zu Sales |
+| `silver` | Erinnerung an Treueprogramm |
 
-### Replenishment Flow (Idee: Automatischer Nachkauf-Reminder nach 30 Tagen)
-- **Trigger:** Event "Package Delivered" + 25 Tage Wartezeit
-- **Conditional Split:** Nach `product_type` Property
-  - Verbrauchsprodukte (Vitamine, Nahrungsergänzung) → "Zeit für Nachschub?"
-  - Einmalprodukte (Nasendusche-Gerät) → Nur Nachfüllsalz empfehlen
-- **Personalisierung:** Direktlink zum zuletzt gekauften Produkt
-- **Rabatt-Logik:** Nach 2. Reminder kleiner Anreiz (5-10%)
+---
 
-### Saisonale Flows (Idee: Proaktive Ansprache basierend auf Jahreszeit)
+### 3. Cross-Channel Flow
 
-**Erkältungssaison Flow (September - Februar):**
-- **Trigger:** Segment "Erkältungsprodukt-Käufer" + Datum im Zeitraum
-- tetesept Nasendusche, Immunprodukte, zirkulin Propolis
-- "Der Herbst kommt – bist du vorbereitet?"
+> **Ziel:** Kunden belohnen, die über mehrere Kanäle kaufen (z.B. Shopify + Amazon)
 
-**Allergiesaison Flow (März - Juni):**
-- **Trigger:** Segment "Allergie-Käufer" + Datum im Zeitraum
-- tetesept Nasendusche bei Pollenallergie
-- "Pollenzeit startet – jetzt vorsorgen"
+| | |
+|---|---|
+| **Trigger** | Hinzugefügt zur Liste "Cross-Channel Customers" |
+| **Split nach** | `channels_count` Property |
 
-**Adventskalender Flow (Oktober - November):**
-- **Trigger:** Alle Kunden oder VIPs + Datum
-- Früher Zugang für VIPs, Reminder-Serie
-- "Sichere dir deinen Adventskalender bevor er ausverkauft ist"
+| Kanäle | Aktion |
+|--------|--------|
+| 2 Kanäle | Danke-Mail + kleiner Bonus |
+| 3+ Kanäle | Exklusiver Loyalty-Status + besondere Angebote |
 
-### Schwangerschafts-Journey Flow (Idee: Langfristige Begleitung über 9+ Monate)
-- **Trigger:** Kauf von Schwangerschaftsvitaminen
-- **Journey:**
-  - Monat 1-3: Folsäure, Übelkeit-Tipps
-  - Monat 4-6: Eisen, Energie
-  - Monat 7-9: Geburtsvorbereitung
-  - Nach Geburt: Stillzeit-Vitamine, Baby-Pflege Cross-Sell
-- **Wichtig:** Opt-in für diese Journey (sensibles Thema)
+---
 
-### Neukunden-Willkommens-Flow (Idee: Erste Beziehung aufbauen - größte Herausforderung!)
-- **Trigger:** Erster Kauf abgeschlossen
-- **Serie:**
-  - Tag 1: Danke + Versandinfo
-  - Tag 3: Markengeschichte (tetesept/zirkulin/SOS Tradition)
-  - Tag 7: Anwendungstipps für gekauftes Produkt
-  - Tag 14: Bewertung anfragen
-  - Tag 21: Cross-Sell basierend auf Erstkauf
-  - Tag 30: Replenishment-Reminder
+### 4. Shipment Flows
 
-### Schlaf-Routine Flow (Idee: Kunden mit Schlafprodukten langfristig begleiten)
-- **Trigger:** Kauf von Schlaf-/Einschlafprodukten
-- **Content:**
-  - Tipps für besseren Schlaf (Content Marketing)
-  - Ergänzende Produkte (zirkulin Baldrian, Melatonin)
-  - Nach 30 Tagen: "Wie schläfst du jetzt?"
+> **Ziel:** Kunden proaktiv über Versandstatus informieren
+
+#### 4a. Package Shipped Flow
+
+| | |
+|---|---|
+| **Trigger** | Event "Package Shipped" |
+
+| Timing | Aktion |
+|--------|--------|
+| Sofort | Tracking-Link + "Dein Paket ist unterwegs" |
+| +1 Tag | Cross-Sell: "Während du wartest..." |
+| +2 Tage | Anwendungstipps für bestellte Produkte |
+
+#### 4b. Package Delivered Flow
+
+| | |
+|---|---|
+| **Trigger** | Event "Package Delivered" |
+
+| Timing | Aktion |
+|--------|--------|
+| +3-5 Tage | Review Request |
+| +7 Tage | Anwendungstipps |
+| +25 Tage | Replenishment-Reminder starten |
+
+#### 4c. Delivery Problem Flow
+
+| | |
+|---|---|
+| **Trigger** | Event "Delivery Failed" oder "Delivery Delayed" |
+
+| Problem | Aktion |
+|---------|--------|
+| Verspätung | Proaktive Entschuldigung |
+| Fehlgeschlagen | Support-Kontakt anbieten |
+
+---
+
+### 5. At-Risk Intervention
+
+> **Ziel:** High Value Customers mit ungelösten Zendesk Tickets retten
+
+| | |
+|---|---|
+| **Trigger** | Hinzugefügt zur Liste "High Value At Risk" |
+| **Split nach** | `recommended_action` Property |
+
+| Action | Aktion |
+|--------|--------|
+| `resolve_support_first` | Verzögerung, prüfen ob Ticket gelöst |
+| `service_recovery` | Entschuldigung + Kompensationsangebot |
+| `incentive_offer` | Rückgewinnungs-Rabatt |
+
+---
+
+### 6. Product Recommendation Flow
+
+> **Ziel:** Cross-Sell/Upsell basierend auf Kaufhistorie
+
+| | |
+|---|---|
+| **Trigger** | Hinzugefügt zur Liste "Upsell Candidates" |
+| **Split nach** | `preferred_categories` Property |
+
+**Beispiele für tetesept, goodvita, rund.um:**
+
+| Gekauft | Empfehlung |
+|---------|------------|
+| Energie-Produkte | Konzentrations-Produkte (Focus Plus Sticks) |
+| Schlaf-Produkte | Ruhe/Calm-Produkte (Reishi Kapseln) |
+| Immun-Produkte | Komplett-Bundles |
+| Einzelprodukte | Bundle-Builder mit Rabatt |
+| Kapseln | Passende Plus Sticks (Booster) |
+| tetesept | Premium-Linie (rund.um, goodvita) |
+
+---
+
+### 7. Replenishment Flow
+
+> **Ziel:** Automatischer Nachkauf-Reminder nach 30 Tagen
+
+| | |
+|---|---|
+| **Trigger** | Event "Package Delivered" + 25 Tage Wartezeit |
+| **Split nach** | `product_type` Property |
+
+| Produkttyp | Aktion |
+|------------|--------|
+| Verbrauchsprodukte | "Zeit für Nachschub?" + Direktlink |
+| Einmalprodukte | Nur Nachfüllsalz empfehlen |
+| Nach 2. Reminder | Kleiner Anreiz (5-10% Rabatt) |
+
+---
+
+### 8. Saisonale Flows
+
+> **Ziel:** Proaktive Ansprache basierend auf Jahreszeit
+
+#### 8a. Erkältungssaison (September - Februar)
+
+| | |
+|---|---|
+| **Trigger** | Segment "Erkältungsprodukt-Käufer" + Datum |
+| **Produkte** | tetesept Nasendusche, Immunprodukte, zirkulin Propolis |
+| **Message** | "Der Herbst kommt – bist du vorbereitet?" |
+
+#### 8b. Allergiesaison (März - Juni)
+
+| | |
+|---|---|
+| **Trigger** | Segment "Allergie-Käufer" + Datum |
+| **Produkte** | tetesept Nasendusche bei Pollenallergie |
+| **Message** | "Pollenzeit startet – jetzt vorsorgen" |
+
+#### 8c. Adventskalender (Oktober - November)
+
+| | |
+|---|---|
+| **Trigger** | Alle Kunden oder VIPs + Datum |
+| **Aktion** | Früher Zugang für VIPs, Reminder-Serie |
+| **Message** | "Sichere dir deinen Adventskalender!" |
+
+---
+
+### 9. Schwangerschafts-Journey Flow
+
+> **Ziel:** Langfristige Begleitung über 9+ Monate
+>
+> ⚠️ **Wichtig:** Opt-in für diese Journey (sensibles Thema)
+
+| | |
+|---|---|
+| **Trigger** | Kauf von Schwangerschaftsvitaminen |
+
+| Zeitraum | Content |
+|----------|---------|
+| Monat 1-3 | Folsäure, Übelkeit-Tipps |
+| Monat 4-6 | Eisen, Energie |
+| Monat 7-9 | Geburtsvorbereitung |
+| Nach Geburt | Stillzeit-Vitamine, Baby-Pflege Cross-Sell |
+
+---
+
+### 10. Neukunden-Willkommens-Flow
+
+> **Ziel:** Erste Beziehung aufbauen (größte Herausforderung!)
+
+| | |
+|---|---|
+| **Trigger** | Erster Kauf abgeschlossen |
+
+| Tag | Aktion |
+|-----|--------|
+| 1 | Danke + Versandinfo |
+| 3 | Markengeschichte (tetesept/zirkulin/SOS) |
+| 7 | Anwendungstipps für gekauftes Produkt |
+| 14 | Bewertung anfragen |
+| 21 | Cross-Sell basierend auf Erstkauf |
+| 30 | Replenishment-Reminder |
+
+---
+
+### 11. Schlaf-Routine Flow
+
+> **Ziel:** Kunden mit Schlafprodukten langfristig begleiten
+
+| | |
+|---|---|
+| **Trigger** | Kauf von Schlaf-/Einschlafprodukten |
+
+| Timing | Content |
+|--------|---------|
+| +3 Tage | Tipps für besseren Schlaf (Content Marketing) |
+| +14 Tage | Ergänzende Produkte (zirkulin Baldrian, Melatonin) |
+| +30 Tage | "Wie schläfst du jetzt?" + Feedback |
 
 ## Wichtige Metriken im dim_customers
 
