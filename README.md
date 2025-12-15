@@ -35,6 +35,29 @@ flowchart LR
     Hightouch --> Klaviyo_out["Klaviyo<br/>(activation)"]
 ```
 
+### Warum nicht einfach Klaviyo direkt mit Shopify verbinden?
+
+Klaviyo bietet eine native Shopify-Integration, die mit 2 Klicks eingerichtet ist. Die Frage ist berechtigt: **Warum der Aufwand mit BigQuery, dbt und Hightouch?**
+
+| Bereich | Nur Klaviyo ↔ Shopify | Mit CDP-Lösung |
+|---------|----------------------|----------------|
+| **Datenquellen** | Nur Shopify | Shopify + **Amazon** + Zendesk + Carrier-Tracking |
+| **Cross-Channel** | ❌ Kunde bei Amazon unsichtbar | ✅ Einheitlicher Kunde über alle Kanäle |
+| **Lifetime Value** | Nur Shopify-Umsatz | Gesamtumsatz inkl. Amazon |
+| **Support-Daten** | ❌ | ✅ Zendesk-Tickets fließen ein |
+| **Lieferstatus** | Nur "Fulfilled" | ✅ Detailliertes Tracking (DHL/DPD Status, Zustellprobleme) |
+| **High-Value at Risk** | ❌ | ✅ VIP + offenes Support-Ticket = Alarm |
+| **Segmentlogik** | Klaviyo-UI Limits | Unbegrenzt komplexe SQL-Logik |
+
+**Konkrete Use Cases die NUR mit CDP möglich sind:**
+
+1. **Cross-Channel Erkennung**: Kunde kauft bei Amazon → wird in Klaviyo als Bestandskunde erkannt (kein Neukunden-Flow)
+2. **Support-basierte Flows**: "High Value Customer mit ungelöstem Ticket seit 5 Tagen" → Eskalation
+3. **Carrier-Tracking Flows**: "Paket bei DHL als 'Zustellung fehlgeschlagen' markiert" → Proaktive Email
+4. **Echte CLV-Berechnung**: Gesamtwert über Shopify + Amazon = bessere VIP-Segmentierung
+
+**Fazit:** Wenn Amazon ein signifikanter Kanal ist, ist die direkte Klaviyo-Shopify-Anbindung wie "mit einem Auge fahren" – man sieht nur die Hälfte der Kundendaten.
+
 ### Detaillierte Architektur
 
 ```mermaid
