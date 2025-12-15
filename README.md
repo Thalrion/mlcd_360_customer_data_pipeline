@@ -56,7 +56,7 @@ Klaviyo bietet eine native Shopify-Integration, die mit 2 Klicks eingerichtet is
 3. **Carrier-Tracking Flows**: "Paket bei DHL als 'Zustellung fehlgeschlagen' markiert" → Proaktive Email
 4. **Echte CLV-Berechnung**: Gesamtwert über Shopify + Amazon = bessere VIP-Segmentierung
 
-**Fazit:** Wenn Amazon ein signifikanter Kanal ist, ist die direkte Klaviyo-Shopify-Anbindung wie "mit einem Auge fahren" – man sieht nur die Hälfte der Kundendaten.
+**Fazit:** Da Amazon ein sehr signifikanter Vertriebskanal ist, wäre die direkte Klaviyo-Shopify-Anbindung wie "mit einem Auge fahren" – man sieht nur die Hälfte der Kundendaten.
 
 ### Detaillierte Architektur
 
