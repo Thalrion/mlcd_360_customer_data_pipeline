@@ -43,7 +43,7 @@ flowchart TB
         shopify["Shopify<br/>(Bestellungen, Kunden)"]
         amazon["Amazon<br/>(Bestellungen, Kunden)"]
         shipments["Shipments<br/>(DHL, DPD, Tracking)"]
-        klaviyo_in["Klaviyo<br/>(Email Events, Subscriptions)"]
+        klaviyo_in["Klaviyo<br/>(Events, Subscriptions, Profildaten)"]
         zendesk["Zendesk<br/>(Support Tickets)"]
     end
 
@@ -58,12 +58,12 @@ flowchart TB
     subgraph intermediate["INTERMEDIATE LAYER"]
         int_order["int_customer__order_metrics<br/>(RFM, CLV, Kaufmuster)"]
         int_ship["int_customer__shipment_metrics<br/>(Lieferstatus, Tracking, Zustellquote)"]
-        int_email["int_customer__email_engagement<br/>(Öffnungs-/Klickraten, Engagement, Subscriptions)"]
+        int_email["int_customer__email_engagement<br/>(Öffnungs-/Klickraten, Engagement,<br/>Subscriptions, Demografie)"]
         int_support["int_customer__support_metrics<br/>(Tickets, CSAT, Lösungszeit)"]
     end
 
     subgraph marts["MARTS LAYER"]
-        dim_customers["dim_customers<br/>(Einheitlicher Customer 360° View)<br/><br/>• Profil-Informationen • Email Engagement<br/>• Kauf-Metriken • Support-Metriken<br/>• RFM Scores • Lifecycle Stage<br/>• Value Tier • Engagement Score<br/>• Marketing Flags • Segment-Zuweisungen"]
+        dim_customers["dim_customers<br/>(Einheitlicher Customer 360° View)<br/><br/>• Profil &amp; Demografie • Email Engagement<br/>• Kauf-Metriken • Support-Metriken<br/>• RFM Scores • Lifecycle Stage<br/>• Value Tier • Engagement Score<br/>• Marketing Flags • Segment-Zuweisungen"]
 
         subgraph marts_outputs["Abgeleitete Modelle"]
             seg["seg_*<br/>(Segmente)"]
@@ -385,6 +385,9 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 | `cross_sell_score` | 0-100 Score für Cross-Sell Wahrscheinlichkeit | Priorisierung |
 | `avg_delivery_time` | Durchschnittliche Lieferzeit | Service-Qualität |
 | `delivery_success_rate` | Zustellquote | Risiko-Indikator |
+| `gender` | Geschlecht (aus Newsletter-Anmeldung) | Personalisierung |
+| `birth_date` / `age` | Geburtsdatum / Alter | Personalisierung, Produktempfehlungen |
+| `has_demographic_data` | Boolean ob Demografie vorhanden | Datenqualität |
 
 ## Voraussetzungen
 
@@ -392,7 +395,7 @@ Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisc
 - ✅ Shopify-Daten (bereits über bestehende Pipeline synchronisiert)
 - ✅ Amazon-Daten (bereits über bestehende Pipeline synchronisiert)
 - ✅ Shipment-Daten (bereits in BigQuery - DHL, DPD, etc.)
-- ⏳ Klaviyo-Daten (ausstehend - über Klaviyos nativem BigQuery Export: Events + List Subscriptions)
+- ⏳ Klaviyo-Daten (ausstehend - über Klaviyos nativem BigQuery Export: Events, List Subscriptions, Profildaten inkl. Demografie)
 - ⏳ Zendesk-Daten (ausstehend - über DLT <1 Tag Setup)
 
 ## Kostenvergleich
