@@ -90,7 +90,7 @@ Reverse ETL ermöglicht es, datengetriebene Kundenprofile und Segmente, die wir 
 ### Erweiterbarkeit
 
 Die Plattform ist **leicht erweiterbar** für neue Vertriebskanäle. Beim Hinzufügen neuer Shops (z.B. Temu, eBay, Otto, Kaufland) müssen lediglich:
-1. Die Datenquelle an BigQuery angeschlossen werden (via Fivetran, Airbyte o.ä.)
+1. Die Datenquelle an BigQuery angeschlossen werden (via DLT / Cloud Functions)
 2. Entsprechende Staging-Modelle (`stg_[shop]__customers`, `stg_[shop]__orders`) erstellt werden
 
 Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisch die Integration in den Customer 360° View.
