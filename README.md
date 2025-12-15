@@ -1,8 +1,8 @@
-# MLC-direct D2C E-Commerce Customer 360° - dbt Models
+# MLC-direct D2C E-Commerce Customer 360°
 
 ## Übersicht
 
-Diese dbt-Modelle erstellen einen **einheitlichen Customer 360° View** für D2C E-Commerce,
+Diese dbt-Modelle erstellen einen **einheitlichen Customer 360° View** für die MLC-direct D2C E-Commerce-Plattform,
 der via **Hightouch** nach **Klaviyo** synchronisiert wird.
 
 ```
@@ -74,6 +74,14 @@ der via **Hightouch** nach **Klaviyo** synchronisiert wird.
 │   • Post-Purchase Nurture (ausgelöst durch seg_repeat_purchase_*)               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Erweiterbarkeit
+
+Die Plattform ist **leicht erweiterbar** für neue Vertriebskanäle. Beim Hinzufügen neuer Shops (z.B. Temu, eBay, Otto, Kaufland) müssen lediglich:
+1. Die Datenquelle an BigQuery angeschlossen werden (via Fivetran, Airbyte o.ä.)
+2. Entsprechende Staging-Modelle (`stg_[shop]__customers`, `stg_[shop]__orders`) erstellt werden
+
+Die bestehende Logik in den Intermediate- und Marts-Layern übernimmt automatisch die Integration in den Customer 360° View.
 
 ## Modell-Struktur
 
@@ -237,4 +245,3 @@ Für jede Segment-Tabelle:
 3. [ ] Hightouch Free Tier aktivieren
 4. [ ] Ersten Sync (dim_customers) konfigurieren
 5. [ ] In Klaviyo: Flow für erstes Segment erstellen
-6. [ ] PoC der Geschäftsführung präsentieren
