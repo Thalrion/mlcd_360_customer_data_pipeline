@@ -2,8 +2,7 @@
 
 ## Übersicht
 
-Diese dbt-Modelle erstellen einen **einheitlichen Customer 360° View** für die MLC-direct D2C E-Commerce-Plattform,
-der via **Reverse ETL** nach **Klaviyo** synchronisiert wird.
+Konzept für einen **einheitlichen Customer 360° View** für die MLC-direct D2C E-Commerce-Plattform, inklusive **Reverse ETL** Synchronisation nach **Klaviyo**.
 
 ### Was ist Reverse ETL?
 
@@ -12,7 +11,7 @@ der via **Reverse ETL** nach **Klaviyo** synchronisiert wird.
 - **Ohne Reverse ETL:** Kundendaten liegen isoliert im Data Warehouse und können nicht für Marketing genutzt werden
 - **Mit Reverse ETL:** Kundensegmente und -eigenschaften werden automatisch in Marketing-Tools übertragen
 
-**Für das Management:** Reverse ETL ermöglicht es, datengetriebene Kundenprofile und Segmente, die wir in BigQuery erstellen, direkt für personalisierte E-Mail-Kampagnen zu nutzen – ohne manuelle Exporte oder IT-Aufwand.
+Reverse ETL ermöglicht es, datengetriebene Kundenprofile und Segmente, die wir in BigQuery erstellen, direkt für personalisierte E-Mail-Kampagnen zu nutzen – ohne manuelle Exporte oder IT-Aufwand.
 
 **Beispiel-Tools:** Hightouch, Census, Polytomic, Rudderstack
 
