@@ -19,12 +19,20 @@ Reverse ETL ermöglicht es, datengetriebene Kundenprofile und Segmente, die wir 
 
 ### Architektur auf einen Blick
 
-```
-Shopify  ─────┐
-Amazon   ─────┤
-Klaviyo  ─────┼──→  BigQuery  ──→  dbt Models  ──→  Hightouch  ──→  Klaviyo
-Zendesk  ─────┤      (raw)        (unified)      (reverse ETL)    (activation)
-Shipments ────┘
+```mermaid
+flowchart LR
+    subgraph sources[" "]
+        Shopify
+        Amazon
+        Klaviyo_in[Klaviyo]
+        Zendesk
+        Shipments
+    end
+
+    sources --> BigQuery["BigQuery<br/>(raw)"]
+    BigQuery --> dbt["dbt Models<br/>(unified)"]
+    dbt --> Hightouch["Hightouch<br/>(reverse ETL)"]
+    Hightouch --> Klaviyo_out["Klaviyo<br/>(activation)"]
 ```
 
 ### Detaillierte Architektur
